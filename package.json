@@ -1,0 +1,40 @@
+{
+  "name": "vue3-seamless-roll",
+  "version": "0.0.0",
+  "private": false,
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.2.16"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.9.4",
+    "typescript": "^4.4.4",
+    "vite": "^2.6.13",
+    "vue-tsc": "^0.29.2",
+    "prettier": "^2.4.1"
+  },
+  "lint-staged": {
+    "*": "prettier -w -u"
+  },
+  "description": "Vue3 seamless roll",
+  "keywords": ["Vue3", "seamless roll"],
+  "main": "index.js",
+  "browserslist": "last 2 versions, > 1%, not dead",
+  "author": "lvjiaxuan",
+  "email": "471501748@qq.com",
+  "homepage": "https://github.com/lvjiaxuan/vue-seamless-roll",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lvjiaxuan/vue-seamless-roll"
+  },
+  "publishConfig": {
+    "tag": "latest",
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "license": "MIT"
+}
