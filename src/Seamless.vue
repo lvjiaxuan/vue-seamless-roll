@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <p>xx</p>
+  <p>yy</p>
 </template>
 
 <style></style>
