@@ -3,7 +3,17 @@ import Seamless from './components/Seamless.vue'
 </script>
 
 <template>
-  <seamless />
+  <main class="app">
+    <seamless :roll-list="['哈哈哈', 'xxxxxxx', 'sadfasdf']" />
+  </main>
 </template>
 
-<style></style>
+<style>
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
