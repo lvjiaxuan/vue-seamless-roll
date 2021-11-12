@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, nextTick } from 'vue'
 /**
  * props
  */
 const props = withDefaults(
   defineProps<{
     rollList: number[] | string[]
+    stepTimeout: number | string
   }>(),
   {
-    rollList: () => [1, 2, 3],
+    rollList: () => [1, 2],
+    stepTimeout: 2000,
   }
 )
 
@@ -17,76 +19,131 @@ const props = withDefaults(
  */
 const ulRef = ref<Element>()
 const ulStyle = ref<{ [k: string]: string }>({
-  // top: 0,
-  // transition: 'top 1s',
+  transition: 'transform 1.5s',
 })
 
 /**
  * computed
  */
+const rollListRender = computed(() => [...props.rollList, props.rollList[0]])
+
 const itemHeight = computed(() => {
-  if (!ulRef.value || !props.rollList.length) {
+  if (!ulRef.value || !rollListRender.value.length) {
     return 0
   }
-  return ulRef.value.clientHeight / props.rollList.length
+  return ulRef.value.clientHeight / rollListRender.value.length
 })
 
-const keyframesStr = computed(() => {
-  if (!ulRef.value || !itemHeight.value) {
-    return ''
-  }
+// const keyFramesFlag = Date.now()
+// const keyframesStr = computed(() => {
+//   if (!ulRef.value || !itemHeight.value) {
+//     return ''
+//   }
 
-  // const step = 100 / props.rollList.length
-
-  const retObj: { [k: string]: { ['from']: { ['transform']: string }; ['to']: { ['transform']: string } } } = {}
-  let str = ''
-  for (let i = 1, n = props.rollList.length; i < n; i++) {
-    str += `@keyframes#sp#roll-${i} {
-      from {
-        transform: translateY(${-(i - 1) * itemHeight.value}px);
-      }
-      to {
-        transform: translateY(${-i * itemHeight.value}px);
-      }
-    }`
-  }
-  return str.replace(/[\s\r\n]/g, '').replace(/#sp#/g, ' ')
-})
+//   let str = ''
+//   for (let i = 1, n = rollListRender.value.length + 1; i < n; i++) {
+//     str += `@keyframes#sp#roll-${keyFramesFlag}-${i} {
+//       from {
+//         transform: translateY(${-(i - 1) * itemHeight.value}px);
+//       }
+//       to {
+//         transform: translateY(${-i * itemHeight.value}px);
+//       }
+//     }`
+//   }
+//   return str.replace(/[\s\r\n]/g, '').replace(/#sp#/g, ' ')
+// })
 
 /**
  * watch
  */
-const stopFun = watch(keyframesStr, newValue => {
+// let frameStep = 1
+// const stopFun = watch(keyframesStr, newValue => {
+//   if (newValue) {
+//     stopFun()
+//     const style = document.createElement('style')
+//     style.type = 'text/css'
+//     style.innerHTML = newValue
+//     document.getElementsByTagName('head')[0].appendChild(style)
+//     ulStyle.value['animation-name'] = `roll-${keyFramesFlag}-${frameStep}`
+//   }
+// })
+let frameStep = 0
+const stopWatch = watch(itemHeight, newValue => {
   if (newValue) {
-    stopFun()
-    addKeyframes(newValue)
-    ulStyle.value['animation-name'] = 'roll-1'
+    stopWatch()
+    ulStyle.value['transform'] = `translateY(-${frameStep++ * itemHeight.value}px)` // transition initial start
   }
 })
 
 /**
  * methods
  */
-const animationstart = () => {
-  console.log('start')
+let lastTransitionTime = 0
+let stepTime = 0
+const transitionstart = () => {
+  if (lastTransitionTime == 0) {
+    console.log('动画开始')
+  } else {
+    console.log('动画开始，停留时间', Date.now() - stepTime)
+  }
+  console.log('\n')
+  lastTransitionTime = Date.now()
+}
+const transitionend = () => {
+  console.log('动画结束', Date.now() - lastTransitionTime)
+  stepTime = Date.now()
+
+  if (frameStep == rollListRender.value.length) {
+    console.log('立即无感重置')
+    // 1. 到底 无感重置
+    ulStyle.value['transition'] = 'transform 0s'
+    frameStep = 0
+    ulStyle.value['transform'] = `translateY(-${frameStep++ * itemHeight.value}px)`
+
+    // 2. 继续翻滚 window.requestAnimationFrame 传入的是下一个帧之前的的函数
+    window.requestAnimationFrame(() => {
+      // 下一个帧为真实重绘
+      window.requestAnimationFrame(() => {
+        // 再下一个帧，已经重置完毕，此时设置过渡时间
+        ulStyle.value['transition'] = 'transform 1.5s'
+      })
+    })
+  }
+
+  setTimeout(
+    () => (ulStyle.value['transform'] = `translateY(-${frameStep++ * itemHeight.value}px)`),
+    +props.stepTimeout
+  ) // 浏览器在下一个animation frame才开始执行动画
 }
 
-const animationend = () => {
-  console.log('end')
-}
+// let step = 0
+// let lastTransitionTime: number
+// function stepFun(timestamp: number) {
+//   lastTransitionTime = lastTransitionTime ?? timestamp
+//   const elapsed = timestamp - lastTransitionTime
 
-const addKeyframes = (runkeyframes: string) => {
-  const style = document.createElement('style')
-  style.type = 'text/css'
-  style.innerHTML = runkeyframes
-  document.getElementsByTagName('head')[0].appendChild(style)
-}
+//     console.log(elapsed)
+//   if (elapsed >= props.stepTimeout) {
+//     lastTransitionTime = timestamp
+//   }
+
+//   // console.log('stepFun', elapsed, step)
+//   // if (elapsed > props.stepTimeout || elapsed == 0) {
+//   //   lastFrameTime = timestamp
+//   //   ulStyle.value['transform'] = `translateY(-${step++ * itemHeight.value})`
+//   // }
+//   // window.requestAnimationFrame(stepFun)
+
+//   // setTimeout(() => window.requestAnimationFrame(stepFun), props.stepTimeout)
+
+// }
 </script>
 
 <template>
   <section class="app-seamless" :style="{ height: itemHeight + 'px' }">
-    <ul ref="ulRef" :style="ulStyle" @animationstart="animationstart" @animationend="animationend">
-      <li v-for="text in rollList" :key="text">{{ text }}</li>
+    <ul ref="ulRef" :style="ulStyle" @transitionstart="transitionstart" @transitionend="transitionend">
+      <li v-for="text in rollListRender" :key="text">{{ text }}-</li>
     </ul>
   </section>
 </template>
@@ -94,8 +151,9 @@ const addKeyframes = (runkeyframes: string) => {
 <style lang="scss">
 .app-seamless {
   position: relative;
-  border: 1px solid red;
-  // overflow: hidden;
+  background-color: red;
+  font-size: 0;
+  overflow: hidden;
 
   & > ul,
   & > li {
@@ -108,47 +166,20 @@ const addKeyframes = (runkeyframes: string) => {
     position: absolute;
     left: 0;
     top: 0;
-    border: 1px solid blue;
+    background-color: blue;
     // animation-name: roll-a;
-    animation-duration: 3s;
-    animation-timing-function: linear;
-    animation-delay: 0s;
-    animation-iteration-count: infinite; // infinite
-    animation-direction: normal; // alternate
-    animation-fill-mode: forwards;
+    // animation-duration: 0.5s;
+    // animation-timing-function: linear;
+    // animation-delay: 0s;
+    // animation-iteration-count: 1; // infinite
+    // animation-direction: normal; // alternate
+    // animation-fill-mode: forwards; // 停在最后一帧
     // animation-play-state: running;
 
     & > li {
-      border: 1px solid green;
+      background-color: green;
+      font-size: 16px;
     }
   }
 }
-
-// @keyframes roll-a {
-//   from {
-//     transform: translateY(0);
-//   }
-
-//   to {
-//     transform: translateY(-23px);
-//   }
-// }
-// @keyframes roll-b {
-//   from {
-//     transform: translateY(-23px);
-//   }
-
-//   to {
-//     transform: translateY(-46px);
-//   }
-// }
-// @keyframes roll-c {
-//   from {
-//     transform: translateY(-46px);
-//   }
-
-//   to {
-//     transform: translateY(-69px);
-//   }
-// }
 </style>
