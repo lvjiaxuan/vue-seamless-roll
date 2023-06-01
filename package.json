@@ -1,0 +1,41 @@
+{
+  "name": "vue-seamless-roll",
+  "type": "module",
+  "version": "0.0.0",
+  "private": false,
+  "description": "",
+  "author": "lvjiaxuan <471501748@qq.com> (https://github.com/lvjiaxuan)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lvjiaxuan/vue-seamless-roll"
+  },
+  "keywords": [],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "echo dev",
+    "build": "echo build",
+    "lint": "eslint .",
+    "prepublishOnly": "nr build",
+    "r": "lvr --no-push"
+  },
+  "devDependencies": {
+    "@lvjiaxuan/eslint-plugin": "^0.15.0",
+    "@tsconfig/node18": "^2.0.1",
+    "@types/node": "^20.2.5",
+    "eslint": "^8.41.0",
+    "typescript": "^5.0.4"
+  }
+}
