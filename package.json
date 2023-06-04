@@ -35,7 +35,8 @@
     "@lvjiaxuan/eslint-plugin": "^0.15.0",
     "@tsconfig/node18": "^2.0.1",
     "@types/node": "^20.2.5",
-    "eslint": "^8.41.0",
-    "typescript": "^5.0.4"
+    "@vue/tsconfig": "^0.4.0",
+    "eslint": "^8.42.0",
+    "typescript": "^5.1.3"
   }
 }
