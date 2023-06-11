@@ -1,4 +1,4 @@
-name: Release
+name: Release and Publish
 
 on:
   push:
@@ -24,6 +24,6 @@ jobs:
 
       - run: pnpm i @antfu/ni -g
 
-      - run: npx lvr release
+      - run: npx lvr release & (nci && pnpm publish --no-git-checks)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
