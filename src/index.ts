@@ -1,12 +1,11 @@
 import {
   type PropType,
-  computed,
   defineComponent,
   h,
+  nextTick,
   onMounted,
   ref,
   watch,
-  watchEffect,
 } from 'vue-demi'
 
 export default defineComponent({
@@ -32,32 +31,41 @@ export default defineComponent({
         'transition-timing-function': string
       }>,
       default: () => ({
-        'transition-delay': '1s',
-        'transition-duration': '2s',
+        'transition-delay': '0',
+        'transition-duration': '1s',
         'transition-timing-function': 'linear',
       }),
     },
   },
 
   setup(props) {
-
-    const rollListAppend = computed(() => [ ...props.rollList, props.rollList[0] ])
-
     const liRef = ref<HTMLElement | null>(null)
 
-    const itemHeight = ref(0) // computed(() => liRef.value?.getBoundingClientRect().height ?? 0)
+    const itemHeight = ref(0)
     onMounted(() => itemHeight.value = liRef.value?.getBoundingClientRect().height ?? 0)
 
     const ulTranslateYPX = ref(0)
     const stop = watch(itemHeight, _itemHeight => {
       if (_itemHeight) {
         stop()
-        ulTranslateYPX.value = -itemHeight.value
+        rollNext()
       }
     })
 
-    const onTransitionend = () =>
-      setTimeout(() => ulTranslateYPX.value -= itemHeight.value, +props.interval)
+    const zeroDurationImportant = ref(false)
+    const onTransitionend = () => {
+      if (Math.abs(ulTranslateYPX.value) === itemHeight.value * props.rollList.length) {
+        zeroDurationImportant.value = true
+        ulTranslateYPX.value = 0
+        setTimeout(onTransitionend)
+        // window.requestAnimationFrame(() => window.requestAnimationFrame(onTransitionend))
+      } else {
+        zeroDurationImportant.value = false
+        rollNext()
+      }
+    }
+
+    const rollNext = () => setTimeout(() => ulTranslateYPX.value -= itemHeight.value, +props.interval)
 
     return () => h(
       'div',
@@ -68,17 +76,17 @@ export default defineComponent({
       h(
         'ul',
         {
-          class: 'm0 p0 list-none transition-property-transform',
+          class: [ 'm0 p0 list-none transition-property-transform', { '!duration-0': zeroDurationImportant.value } ],
           style: {
             ...props.transitions,
             transform: `translateY(${ ulTranslateYPX.value }px)`,
           },
           onTransitionend,
         },
-        rollListAppend.value.map((text, idx) => h(
+        [ ...props.rollList, props.rollList[0] ].map((text, idx) => h(
           'li',
           { ref: liRef },
-          `${ idx }-${ text }`,
+          text,
         )),
       ),
     )

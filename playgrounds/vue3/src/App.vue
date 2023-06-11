@@ -4,5 +4,5 @@ import './../../../dist/index.css'
 </script>
 
 <template>
-  <seamless :roll-list="['哈哈哈😀', 'xxxxxxx', 'sadfasdf', 123]" />
+  <seamless :roll-list="['哈哈哈😀', 'sadfasdf', 123]" />
 </template>
