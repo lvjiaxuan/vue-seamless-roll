@@ -12,19 +12,18 @@ export default defineComponent({
   name: 'VueSeamlessRoll',
 
   props: {
-    debug: {
-      type: Boolean,
-      default: false,
-    },
     rollList: {
+      // As the name implies.
       type: Array as PropType<(string | number)[]>,
       default: () => [],
     },
     interval: {
+      // How long is the item Staying.
       type: [ Number, String ],
       default: 2000,
     },
     transitions: {
+      // No need to describe more.
       type: Object as PropType<{
         'transition-delay': string
         'transition-duration': string
@@ -32,7 +31,7 @@ export default defineComponent({
       }>,
       default: () => ({
         'transition-delay': '0',
-        'transition-duration': '1s',
+        'transition-duration': '1s', // Actually, the whole duration time is added with the `transition-delay`.
         'transition-timing-function': 'linear',
       }),
     },
