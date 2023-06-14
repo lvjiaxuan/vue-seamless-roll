@@ -72,22 +72,24 @@ export default defineComponent({
         class: 'of-hidden',
         style: { height: `${ itemHeight.value }px` },
       },
-      h(
-        'ul',
-        {
-          class: [ 'm0 p0 list-none transition-property-transform', { '!duration-0': zeroDurationImportant.value } ],
-          style: {
-            ...props.transitions,
-            transform: `translateY(${ ulTranslateYPX.value }px)`,
+      [
+        h(
+          'ul',
+          {
+            class: [ 'm0 p0 list-none transition-property-transform', { '!duration-0': zeroDurationImportant.value } ],
+            style: {
+              ...props.transitions,
+              transform: `translateY(${ ulTranslateYPX.value }px)`,
+            },
+            on: { transitionend: onTransitionend },
           },
-          onTransitionend,
-        },
-        [ ...props.rollList, props.rollList[0] ].map((text, idx) => h(
-          'li',
-          { ref: liRef },
-          text,
-        )),
-      ),
+          [ ...props.rollList, props.rollList[0] ].map((text, idx) => h(
+            'li',
+            { ref: liRef },
+            text.toString(),
+          )),
+        ),
+      ],
     )
   },
 })

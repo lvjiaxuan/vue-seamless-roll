@@ -48,4 +48,4 @@ props: {
 ## TODO
 
 - [ ] Support slot.
-- [ ] Expose methods like `startRoll` \ `stopRoll` \ `rollTo` .
+- [ ] define and expose methods like `startRoll` \ `stopRoll` \ `rollTo` .
