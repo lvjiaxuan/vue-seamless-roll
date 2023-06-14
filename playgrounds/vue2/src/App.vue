@@ -6,21 +6,23 @@ import { version } from 'vue'
 </script>
 
 <template>
-  <seamless :roll-list="['哈哈哈😀', 'sadfasdf', 123]" />
+  <main>
+    <seamless :roll-list="['哈哈哈😀', 'sadfasdf', 123]" />
 
-  <p text-center>
-    Vue version: {{ version }}
-  </p>
+    <p text-center>
+      Vue version: {{ version }}
+    </p>
 
-  <p text-center>
-    <a
-      href="https://lvjiaxuan.github.io/vue-seamless-roll"
-      target="_blank"
-      rel="noopener noreferrer"
-      decoration-none
-      italic
-    >
-      vue2 version
-    </a>
-  </p>
+    <p text-center>
+      <a
+        href="https://lvjiaxuan.github.io/vue-seamless-roll"
+        target="_blank"
+        rel="noopener noreferrer"
+        decoration-none
+        italic
+      >
+        vue2 version
+      </a>
+    </p>
+  </main>
 </template>
