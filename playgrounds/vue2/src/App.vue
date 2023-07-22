@@ -21,7 +21,7 @@ import { version } from 'vue'
         decoration-none
         italic
       >
-        vue2 version
+        vue3 version
       </a>
     </p>
   </main>
