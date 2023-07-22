@@ -11,7 +11,7 @@
 ## Install
 
 ```sh
-npm i vue-seam-roll
+npm i vue-seamless-roll
 ```
 
 ## Props
